@@ -1,0 +1,44 @@
+<!doctype html>
+<html ng-app="myModule">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../css/index.css">
+
+    <!-- CDN资源 -->
+    <script src="../lib/angular/angular.min.js"></script>
+    <script src="http://cdn.bootcss.com/angular-ui-router/1.0.0-alpha0/angular-ui-router.min.js"></script>
+
+    <!-- webpack打包好的js -->
+    <script src="../js/common.bundle.js"></script>
+    <script src="../js/main.bundle.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="navbar-header" ng-controller="promise">
+            <a class="navbar-brand" ui-sref="#" ng-click="handle()">AngularUI Router</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li>
+                <a ui-sref="home">Home</a>
+            </li>
+            <li>
+                <a ui-sref="about">About</a>
+            </li>
+            <li>
+                <a ui-sref="other">Other</a>
+            </li>
+            <li>
+                <a ui-sref="accordion">accordio</a>
+            </li>
+            <li>
+                <a ui-sref="dialog">dialog</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container">
+        <div ui-view></div>
+    </div>
+</body>
+</html>

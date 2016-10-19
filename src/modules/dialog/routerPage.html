@@ -1,0 +1,32 @@
+<!-- 弹出层模板 -->
+<script type="text/ng-template" id="myDialogTpls">
+    <div>
+        <h3>这是标题</h3>
+        <p>这是dialog内容</p>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>name</th>
+                    <th>age</th>
+                    <th>sex</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th><input type="text" name="name"></th>
+                    <th><input type="text" name="age"></th>
+                    <th><input type="text" name="sex"></th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="ngdialog-buttons">
+        <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="ok()">确定</button>
+        <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog()">关闭</button>
+    </div>
+</script>
+
+<div ng-controller="DialogCtrl">
+    <h1>演示ngDialog</h1>
+    <button ng-click="start()">弹出层1</button>
+</div>
