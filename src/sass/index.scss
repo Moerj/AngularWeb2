@@ -1,6 +1,10 @@
-@import './layout/siderbar.scss';
+@import './layout/_siderbar.scss';
 
 .test{
     // background-color: #222;
     transition: 1s;
 }
+
+
+// at last import modules style
+@import './modules.scss';

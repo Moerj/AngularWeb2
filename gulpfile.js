@@ -7,19 +7,15 @@ var path = require('path'); //获取路劲的模块
 var $ = require('gulp-load-plugins')();
 
 
-//当发生异常时提示错误 确保本地安装gulp-notify和gulp-plumber
-var notify = require('gulp-notify'); //提示信息
-var plumber = require('gulp-plumber');
-
 // webpack
 var webpack = require("webpack"); //webpack主功能
 var commonsPlugin = new webpack.optimize.CommonsChunkPlugin('common.js'); //webpack插件，用于提取个公共js
 var UglifyJsPlugin = new webpack.optimize.UglifyJsPlugin(); //js压缩插件
-var ProvidePlugin = new webpack.ProvidePlugin({  //暴露jquery到全局
-		$ : "jquery",
-		jQuery : "jquery",
-		"window.jQuery" : "jquery"
-	});
+var ProvidePlugin = new webpack.ProvidePlugin({ //暴露jquery到全局
+    $: "jquery",
+    jQuery: "jquery",
+    "window.jQuery": "jquery"
+});
 var webpack = require('webpack-stream'); //将webpack转为gulp流形式调用
 
 // 同步刷新浏览器
@@ -33,8 +29,8 @@ var paths = {
         all: 'src/modules/**/*.html'
     },
     sass: {
-        entry: './src/css/*.scss',
-        all: 'src/css/**/*.scss'
+        entry: './src/sass/*.scss',
+        all: ['src/sass/**/*.scss', 'src/modules/**/*.scss']
     },
     js: {
         entry: './src/js/*.js',
@@ -43,7 +39,7 @@ var paths = {
     images: {
         all: 'src/images/**/*.js'
     },
-    json:{
+    json: {
         all: 'src/json/**/*.json'
     }
 }
@@ -62,14 +58,14 @@ function _webpack(isonce) {
                 commonsPlugin,
                 ProvidePlugin
             ],
-            resolve : {
+            resolve: {
                 // 目录重定向
-				alias : {
-					'~' : path.resolve(__dirname),//设置插项目的根路径
-					'pluginsPath' : path.resolve(__dirname, 'src/', 'js/plugins')//设置插件的根路径
-				},
-				extensions : ['', '.js']
-			},
+                alias: {
+                    '~': path.resolve(__dirname), //设置插项目的根路径
+                    'pluginsPath': path.resolve(__dirname, 'src/', 'js/plugins') //设置插件的根路径
+                },
+                extensions: ['', '.js']
+            },
             externals: {
                 // CDN外部资源,在此定义暴露的全局变量
                 'angular': 'angular'
@@ -79,24 +75,22 @@ function _webpack(isonce) {
             },
             module: {
                 //加载器配置
-                loaders: [
-					{
-	                    test: /src.*\.scss$/,
-	                    loader: "style!css!sass"
-	                }, {
-	                    test: /src.*\.(js|jsx)$/,
-	                    exclude: /node_modules/,
-	                    loader: 'babel-loader',
-	                    query: {
-	                        presets: ['es2015'] // es6转es5
-	                    }
-	                }, {
-	                    test: /src.*\.js$/,
-	                    loader: 'ng-annotate' // 'ngInject';安全化依赖注入，防止混淆压缩报错。
-	                }
-				]
+                loaders: [{
+                    test: /src.*\.scss$/,
+                    loader: "style!css!sass"
+                }, {
+                    test: /src.*\.(js|jsx)$/,
+                    exclude: /node_modules/,
+                    loader: 'babel-loader',
+                    query: {
+                        presets: ['es2015'] // es6转es5
+                    }
+                }, {
+                    test: /src.*\.js$/,
+                    loader: 'ng-annotate' // 'ngInject';安全化依赖注入，防止混淆压缩报错。
+                }]
             }
-        }, null, function(err, stats) {
+        }, null, function (err, stats) {
             /* Use stats to do more things if needed */
             // console.log(stats); //这里可以输出状态值进行调试
         }))
@@ -107,18 +101,25 @@ function _webpack(isonce) {
 }
 
 // webpack  (单次运行，不监听)
-gulp.task('js', function() {
+gulp.task('js', function () {
     return _webpack(false);
+});
+
+
+gulp.task('concat-modules-css', function () {
+    gulp.src('./src/modules/**/*.scss')
+        .pipe($.concat('modules.scss'))
+        .pipe(gulp.dest('./src/sass/'));
+
 });
 
 // sass
 // 以'_'开头的，交给webpack打包，这里不做编译
-var sassSrc = ['./src/sass/**/*.scss', '!./src/sass/**/_*.scss'];
-gulp.task('sass', function() {
-    gulp.src(sassSrc)
+gulp.task('sass', ['concat-modules-css'], function () {
+    gulp.src(paths.sass.all)
         .pipe($.sourcemaps.init())
-        .pipe(plumber({
-            errorHandler: notify.onError('Error: <%= error.message %>')
+        .pipe($.plumber({
+            errorHandler: $.notify.onError('Error: <%= error.message %>')
         }))
         .pipe($.sass().on('error', $.sass.logError))
         .pipe($.autoprefixer({
@@ -131,7 +132,7 @@ gulp.task('sass', function() {
         }));
 });
 
-gulp.task('copy',['lib','images']);
+gulp.task('copy', ['lib', 'images']);
 gulp.task('lib', function () {
     gulp.src('./src/lib/**/*')
         .pipe(gulp.dest('./dist/lib/'));
@@ -150,7 +151,7 @@ gulp.task('html', function () {
         .pipe(gulp.dest('./dist/pages'))
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', function () {
 
     // 文件改变，自动同步浏览器刷新
     browserSync.init({

@@ -33,10 +33,11 @@
     "style-loader": "^0.13.1",
     "webpack": "^1.12.15",
     "webpack-stream": "^3.1.0",
-        "gulp-nunjucks": "^2.3.0",
-            "gulp-sourcemaps": "^1.6.0"
+    "gulp-nunjucks": "^2.3.0",
+    "gulp-sourcemaps": "^1.6.0"
   },
   "devDependencies": {
+    "gulp-concat": "^2.6.0",
     "ng-dialog": "^0.6.0"
   }
 }
